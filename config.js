@@ -4,7 +4,7 @@
 
 const CONFIG = {
     // ===== INFORMAÇÕES PRINCIPAIS =====
-    nome: "testr",
+    nome: "Bruninh",
     frase: '"A mente que se abre a uma nova ideia jamais voltará ao seu tamanho original."',
     badge: "💻 Programador",
     dataAtualizacao: "Atualizado em 20/08/2026",
