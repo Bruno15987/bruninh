@@ -68,7 +68,6 @@
             height: 28px;
             background: rgba(121, 200, 61, 0.45);
         }
-        /* Efeito de clique */
         .ripple {
             position: fixed;
             border-radius: 50%;
@@ -243,7 +242,6 @@
             opacity: 1;
             transform: translateX(-50%) scale(1);
         }
-        /* ===== VISITOR BADGES - Estilo bonito ===== */
         .badges-wrapper {
             max-height: 0;
             opacity: 0;
@@ -338,12 +336,23 @@
             top: 12px;
             left: 12px;
         }
+
+        /* Player do YouTube invisível */
+        #youtube-player {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
     </style>
 </head>
 <body>
     <div class="cursor" id="cursor"></div>
     <canvas id="matrix"></canvas>
     <canvas id="stars"></canvas>
+
     <div class="card">
         <button class="theme-btn" id="themeBtn" title="Alternar tema">
             <i class="fa-solid fa-moon"></i>
@@ -351,24 +360,26 @@
         <button class="music-btn" id="musicBtn" title="Música">
             <i class="fa-solid fa-play"></i>
         </button>
+
         <div class="avatar-wrapper">
             <div class="avatar">
                 <img id="avatarImg" src="" alt="Foto de perfil">
             </div>
             <div class="status"></div>
         </div>
+
         <div class="greeting" id="greeting">Bom dia</div>
         <h1 id="name"></h1>
         <div class="time" id="currentTime">--:--</div>
         <p class="quote" id="quote"></p>
         <div class="badge" id="badge"></div>
         <div class="social-icons" id="socialIcons"></div>
-        <!-- Visitor Badges (aparecem ao clicar nas redes) -->
+
         <div class="badges-wrapper" id="badgesWrapper">
             <div class="badges-container" id="badgesContainer"></div>
         </div>
+
         <div class="views">
-            <!-- SVG no lugar do emoji 👁️ -->
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                 <circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.8"/>
@@ -377,47 +388,52 @@
         </div>
         <div class="updated" id="updated"></div>
     </div>
-    <audio id="bg-music" loop preload="auto">
-        <source id="musicSource" src="" type="audio/mpeg">
-    </audio>
+
+    <!-- Player do YouTube (invisível) -->
+    <div id="youtube-player"></div>
+
     <script src="config.js"></script>
     <script>
         // ====================== APLICAR CONFIGURAÇÃO ======================
         if (typeof CONFIG === 'undefined') {
             alert('Erro: O arquivo config.js não foi encontrado!');
         }
+
         document.title = `Perfil | ${CONFIG.nome}`;
         document.querySelector('link[rel="icon"]').href = CONFIG.favicon;
         document.getElementById('avatarImg').src = CONFIG.fotoPerfil;
         document.getElementById('badge').textContent = CONFIG.badge;
         document.getElementById('updated').textContent = CONFIG.dataAtualizacao;
-        document.getElementById('musicSource').src = CONFIG.musica;
+
         // Redes sociais
         const socialContainer = document.getElementById('socialIcons');
         const badgesWrapper = document.getElementById('badgesWrapper');
         let badgesShown = false;
+
         CONFIG.redes.forEach(rede => {
             const a = document.createElement('a');
             a.href = rede.link;
             a.target = '_blank';
             a.className = 'click-sound';
             a.setAttribute('data-tooltip', rede.nome);
+
             if (rede.imagem) {
                 a.innerHTML = `<img src="${rede.imagem}" alt="${rede.nome}">`;
             } else {
                 a.innerHTML = `<i class="${rede.icone}"></i>`;
             }
-            // Ao clicar em qualquer rede → mostra os badges
-            a.addEventListener('click', (e) => {
-                // Só mostra os badges se existirem no config
+
+            a.addEventListener('click', () => {
                 if (CONFIG.badges && CONFIG.badges.length > 0 && !badgesShown) {
                     badgesWrapper.classList.add('show');
                     badgesShown = true;
                 }
             });
+
             socialContainer.appendChild(a);
         });
-        // Cria os badges
+
+        // Badges
         const badgesContainer = document.getElementById('badgesContainer');
         if (CONFIG.badges && CONFIG.badges.length > 0) {
             CONFIG.badges.forEach(badge => {
@@ -428,6 +444,7 @@
                 badgesContainer.appendChild(a);
             });
         }
+
         // ====================== CURSOR ======================
         const cursor = document.getElementById('cursor');
         document.addEventListener('mousemove', (e) => {
@@ -438,6 +455,7 @@
             el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
             el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
         });
+
         // ====================== EFEITO DE CLIQUE ======================
         document.addEventListener('click', (e) => {
             const ripple = document.createElement('div');
@@ -449,21 +467,25 @@
             document.body.appendChild(ripple);
             setTimeout(() => ripple.remove(), 700);
         });
+
         // ====================== MATRIX + ESTRELAS ======================
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
         const starsCanvas = document.getElementById('stars');
         const starsCtx = starsCanvas.getContext('2d');
+
         function resize() {
             canvas.width = starsCanvas.width = window.innerWidth;
             canvas.height = starsCanvas.height = window.innerHeight;
         }
         resize();
         window.addEventListener('resize', resize);
+
         const chars = '0123456789アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンabcdefghijklmnopqrstuvwxyz@#$%&*';
         const fontSize = 16;
         let columns = Math.floor(canvas.width / fontSize);
         let drops = Array(columns).fill(1);
+
         const stars = Array.from({ length: 80 }, () => ({
             x: Math.random() * window.innerWidth,
             y: Math.random() * window.innerHeight,
@@ -471,6 +493,7 @@
             opacity: Math.random(),
             speed: Math.random() * 0.02 + 0.005
         }));
+
         function drawMatrix() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -483,6 +506,7 @@
                 drops[i]++;
             }
         }
+
         function drawStars() {
             starsCtx.clearRect(0, 0, starsCanvas.width, starsCanvas.height);
             stars.forEach(star => {
@@ -494,10 +518,12 @@
                 starsCtx.fill();
             });
         }
+
         setInterval(() => {
             drawMatrix();
             drawStars();
         }, 33);
+
         // ====================== SAUDAÇÃO + HORÁRIO ======================
         function updateGreetingAndTime() {
             const now = new Date();
@@ -511,9 +537,11 @@
         }
         updateGreetingAndTime();
         setInterval(updateGreetingAndTime, 1000);
+
         // ====================== EFEITO DE DIGITAÇÃO ======================
         const nameEl = document.getElementById('name');
         const quoteEl = document.getElementById('quote');
+
         async function typeText(element, text, speed = 80) {
             element.textContent = '';
             for (let i = 0; i < text.length; i++) {
@@ -521,11 +549,13 @@
                 await new Promise(resolve => setTimeout(resolve, speed));
             }
         }
+
         (async () => {
             await typeText(nameEl, CONFIG.nome, 100);
             await new Promise(r => setTimeout(r, 400));
             await typeText(quoteEl, CONFIG.frase, 30);
         })();
+
         // ====================== CONTADOR ======================
         async function updateCounter() {
             const el = document.getElementById('count');
@@ -545,6 +575,7 @@
             }
         }
         updateCounter();
+
         // ====================== SOM DE CLIQUE ======================
         function playClick() {
             try {
@@ -563,43 +594,116 @@
         document.querySelectorAll('.click-sound').forEach(el => {
             el.addEventListener('click', playClick);
         });
-        // ====================== MÚSICA ======================
-        const music = document.getElementById('bg-music');
-        const musicBtn = document.getElementById('musicBtn');
-        let isPlaying = false;
-        music.volume = 0.6;
-        music.load();
-        function tryAutoplay() {
-            music.play().then(() => {
-                isPlaying = true;
-                musicBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-                musicBtn.classList.add('playing');
-            }).catch(() => {});
+
+        // ====================== MÚSICA DO YOUTUBE ======================
+const musicBtn = document.getElementById('musicBtn');
+let player = null;
+let isPlaying = false;
+let playerReady = false;
+
+function getYouTubeID(url) {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+}
+
+const videoId = getYouTubeID(CONFIG.musica);
+
+if (!videoId) {
+    console.error('Link do YouTube inválido no CONFIG.musica');
+    musicBtn.style.opacity = '0.4';
+    musicBtn.title = 'Link do YouTube inválido';
+}
+
+// Carrega a API do YouTube
+const tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+document.head.appendChild(tag);
+
+window.onYouTubeIframeAPIReady = function () {
+    if (!videoId) return;
+
+    player = new YT.Player('youtube-player', {
+        height: '0',
+        width: '0',
+        videoId: videoId,
+        playerVars: {
+            autoplay: 0,           // deixamos 0 e controlamos manualmente
+            controls: 0,
+            disablekb: 1,
+            fs: 0,
+            iv_load_policy: 3,
+            modestbranding: 1,
+            playsinline: 1,
+            rel: 0,
+            loop: 1,
+            playlist: videoId,     // necessário para o loop
+            origin: window.location.origin
+        },
+        events: {
+            onReady: onPlayerReady,
+            onStateChange: onPlayerStateChange,
+            onError: (e) => console.error('Erro no player YouTube:', e.data)
         }
-        window.addEventListener('load', () => {
-            setTimeout(tryAutoplay, 800);
-        });
-        document.body.addEventListener('click', function firstClick() {
-            if (!isPlaying) tryAutoplay();
-            document.body.removeEventListener('click', firstClick);
-        }, { once: true });
-        musicBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            playClick();
-            if (isPlaying) {
-                music.pause();
-                musicBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
-                musicBtn.classList.remove('playing');
-            } else {
-                music.play().then(() => {
-                    musicBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-                    musicBtn.classList.add('playing');
-                }).catch(() => {
-                    alert('Não foi possível tocar a música.\nVerifique se o arquivo existe.');
-                });
-            }
-            isPlaying = !isPlaying;
-        });
+    });
+};
+
+function onPlayerReady(event) {
+    playerReady = true;
+    player.setVolume(65);
+
+    // Tenta autoplay (só funciona se a página estiver em http/https)
+    setTimeout(() => {
+        try {
+            player.playVideo();
+        } catch (err) {
+            console.log('Autoplay bloqueado (normal em muitos navegadores)');
+        }
+    }, 1000);
+}
+
+function onPlayerStateChange(event) {
+    if (event.data === YT.PlayerState.PLAYING) {
+        isPlaying = true;
+        musicBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+        musicBtn.classList.add('playing');
+    } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+        isPlaying = false;
+        musicBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        musicBtn.classList.remove('playing');
+    }
+}
+
+// Desbloqueia no primeiro clique/toque (muito importante)
+function unlockAudio() {
+    if (playerReady && player && !isPlaying) {
+        player.playVideo();
+    }
+    document.body.removeEventListener('click', unlockAudio);
+    document.body.removeEventListener('touchstart', unlockAudio);
+}
+
+document.body.addEventListener('click', unlockAudio, { once: true });
+document.body.addEventListener('touchstart', unlockAudio, { once: true });
+
+// Botão play/pause
+musicBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    playClick();
+
+    if (!playerReady || !player) {
+        alert('Player ainda carregando... Aguarde 2 segundos e tente novamente.');
+        return;
+    }
+
+    if (isPlaying) {
+        player.pauseVideo();
+    } else {
+        player.playVideo();
+    }
+});
+
         // ====================== TEMA ======================
         const themeBtn = document.getElementById('themeBtn');
         themeBtn.addEventListener('click', () => {

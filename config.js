@@ -12,7 +12,7 @@ const CONFIG = {
     // ===== FOTOS E ARQUIVOS =====
     fotoPerfil: "favicon.jpeg",
     favicon: "favicon.jpeg",
-    musica: "sua-musica.mp3",
+    musica: "https://youtu.be/Ys7-6_t7OEQ?si=ZTYtJ448SqI6Uz5q",  // ← coloque o link do vídeo aqui
 
     // ===== REDES SOCIAIS =====
     redes: [
