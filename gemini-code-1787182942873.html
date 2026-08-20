@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil | Bruninh</title>
+    
+    <!-- Adicione uma imagem chamada "favicon.jpeg" na mesma pasta para aparecer na aba -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ... (seu CSS anterior continua igual) ... */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #000; overflow: hidden; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        .card { position: relative; z-index: 2; background: rgba(0, 0, 0, 0.75); border: 1px solid rgba(255, 255, 255, 0.12); backdrop-filter: blur(12px); padding: 25px 20px; border-radius: 16px; text-align: center; width: 90%; max-width: 340px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9); color: #fff; }
+        .avatar-container { position: relative; width: 80px; height: 80px; margin: 0 auto 15px auto; }
+        .avatar { width: 100%; height: 100%; border-radius: 50%; background: #222; display: flex; justify-content: center; align-items: center; overflow: hidden; border: 2px solid rgba(255, 255, 255, 0.2); }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        h1 { font-size: 1.3rem; margin-bottom: 10px; font-weight: 600; }
+        p.quote { font-size: 0.8rem; color: #ccc; font-style: italic; margin-bottom: 15px; line-height: 1.3; }
+        .badge { display: inline-block; border: 1px solid rgba(255, 255, 255, 0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; margin-bottom: 20px; color: #ddd; background: rgba(255, 255, 255, 0.05); }
+        .social-icons { display: flex; justify-content: center; gap: 12px; margin-bottom: 15px; }
+        .social-icons a { color: #fff; font-size: 1rem; text-decoration: none; background: rgba(255, 255, 255, 0.1); width: 36px; height: 36px; display: flex; justify-content: center; align-items: center; border-radius: 50%; transition: 0.3s; }
+        .social-icons a:hover { background: rgba(255, 255, 255, 0.3); transform: translateY(-2px); }
+        .views { font-size: 0.7rem; color: #888; display: flex; align-items: center; justify-content: center; gap: 5px; }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrix"></canvas>
+
+    <div class="card">
+        <div class="avatar-container">
+            <div class="avatar">
+                <img src="favicon.jpeg" alt="Minha foto">
+            </div>
+        </div>
+        
+        <h1>Bruninh</h1>
+        <p class="quote">"A mente que se abre a uma nova ideia jamais voltará ao seu tamanho original."</p>
+        <div class="badge">💻 Programador</div>
+
+        <div class="social-icons">
+            <a href="https://github.com/Bruno15987" target="_blank"><i class="fa-brands fa-github"></i></a>
+            <a href="https://youtube.com/@bit_systems_x" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://instagram.com/bruninh.s_" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+
+        <div class="views">
+            👁️ Visualizações: <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2FSEU-SITE.com&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false" alt="Contador de visitas"/>
+        </div>
+    </div>
+
+    <audio id="bg-music" autoplay loop>
+        <source src="sua-musica.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // ... (seu script Matrix anterior) ...
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        const fontSize = 16;
+        let columns = canvas.width / fontSize;
+        const drops = [];
+        for (let i = 0; i < columns; i++) drops[i] = 1;
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ffffff'; 
+            ctx.font = fontSize + 'px monospace';
+            for (let i = 0; i < drops.length; i++) {
+                const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 33);
+    </script>
+</body>
+</html>
