@@ -35,7 +35,7 @@
             <a href="https://instagram.com/bruninh.s_" target="_blank"><i class="fa-brands fa-instagram"></i></a>
         </div>
         <div class="views">
-            👁️ Visualizações: <span id="count">...</span>
+            👁️ Visualizações: <span id="count">1</span>
         </div>
     </div>
 
@@ -60,11 +60,15 @@
         }
         setInterval(draw, 33);
 
-        // Contador de Visitas em Texto Puro
-        fetch('https://api.counterapi.dev/v1/bruno15987/bruninh/up')
-            .then(res => res.json())
-            .then(data => document.getElementById('count').textContent = data.count)
-            .catch(() => document.getElementById('count').textContent = '1');
+        // Contador de Visitas via API Estável (Api CountAPI)
+        fetch('https://api.counterapi.dev/v1/bruno15987-github/bruninh-site/hit')
+            .then(response => response.json())
+            .then(data => {
+                if(data && data.value) {
+                    document.getElementById('count').textContent = data.value;
+                }
+            })
+            .catch(err => console.log('Erro no contador'));
     </script>
 </body>
 </html>
