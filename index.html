@@ -38,6 +38,13 @@
             👁️ Visualizações: <span id="count">...</span>
         </div>
     </div>
+
+    <!-- Áudio oculto rodando automaticamente em loop -->
+    <!-- Substitua "sua-musica.mp3" pelo arquivo de áudio na mesma pasta -->
+    <audio id="bg-music" autoplay loop>
+        <source src="sua-musica.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
         // Efeito Matrix
         const canvas = document.getElementById('matrix');
@@ -59,7 +66,7 @@
         }
         setInterval(draw, 33);
 
-        // Contador de visualizações (API substituta do CountAPI)
+        // Contador de visualizações
         fetch('https://countapi.mileshilliard.com/api/v1/hit/bruno15987-bruninh-portfolio')
             .then(response => response.json())
             .then(data => {
