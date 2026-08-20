@@ -13,6 +13,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', 'Segoe UI', sans-serif;
+            cursor: none; /* esconde o cursor padrão */
         }
 
         body {
@@ -23,6 +24,28 @@
             justify-content: center;
             align-items: center;
             position: relative;
+        }
+
+        /* Cursor personalizado */
+        .cursor {
+            width: 12px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.15s, height 0.15s, background 0.15s;
+            mix-blend-mode: difference;
+        }
+
+        .cursor.hover {
+            width: 28px;
+            height: 28px;
+            background: rgba(121, 200, 61, 0.4);
         }
 
         body::after {
@@ -95,7 +118,7 @@
         }
 
         .avatar-wrapper:hover {
-            transform: scale(1.05);
+            transform: scale(1.07);
         }
 
         .avatar {
@@ -109,7 +132,7 @@
         }
 
         .avatar-wrapper:hover .avatar {
-            box-shadow: 0 0 0 4px rgba(121, 200, 61, 0.3);
+            box-shadow: 0 0 0 5px rgba(121, 200, 61, 0.35);
         }
 
         .avatar img {
@@ -135,6 +158,8 @@
             margin-bottom: 6px;
             font-weight: 600;
             letter-spacing: -0.3px;
+            min-height: 1.4em;
+            cursor: pointer;
         }
 
         .time {
@@ -149,6 +174,7 @@
             font-style: italic;
             margin-bottom: 16px;
             line-height: 1.45;
+            min-height: 2.8em;
         }
 
         .badge {
@@ -157,7 +183,7 @@
             padding: 5px 14px;
             border-radius: 20px;
             font-size: 0.75rem;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             color: #ccc;
             background: rgba(255, 255, 255, 0.05);
         }
@@ -166,7 +192,7 @@
             display: flex;
             justify-content: center;
             gap: 12px;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
 
         .social-icons a {
@@ -188,10 +214,36 @@
             transform: translateY(-3px) scale(1.08);
         }
 
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #aaa;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.14);
+            color: #fff;
+        }
+
         .views {
             font-size: 0.75rem;
             color: #777;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         #count {
@@ -232,9 +284,34 @@
             color: #79C83D;
             border-color: rgba(121, 200, 61, 0.3);
         }
+
+        /* Toast de cópia */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(20, 20, 20, 0.9);
+            color: #79C83D;
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+            pointer-events: none;
+            border: 1px solid rgba(121, 200, 61, 0.3);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
 </head>
 <body>
+    <div class="cursor" id="cursor"></div>
+
     <canvas id="matrix"></canvas>
 
     <div class="card">
@@ -249,16 +326,22 @@
             <div class="status"></div>
         </div>
 
-        <h1>Bruninh</h1>
+        <h1 id="name">Bruninh</h1>
         <div class="time" id="currentTime">--:--</div>
 
-        <p class="quote">"A mente que se abre a uma nova ideia jamais voltará ao seu tamanho original."</p>
+        <p class="quote" id="quote"></p>
         <div class="badge">💻 Programador</div>
 
         <div class="social-icons">
-            <a href="https://github.com/Bruno15987" target="_blank"><i class="fa-brands fa-github"></i></a>
-            <a href="https://youtube.com/@bit_systems_x" target="_blank"><i class="fa-brands fa-youtube"></i></a>
-            <a href="https://instagram.com/bruninh.s_" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://github.com/Bruno15987" target="_blank" class="click-sound"><i class="fa-brands fa-github"></i></a>
+            <a href="https://youtube.com/@bit_systems_x" target="_blank" class="click-sound"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://instagram.com/bruninh.s_" target="_blank" class="click-sound"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+
+        <div class="actions">
+            <button class="copy-btn click-sound" id="copyBtn">
+                <i class="fa-regular fa-copy"></i> Copiar perfil
+            </button>
         </div>
 
         <div class="views">
@@ -267,81 +350,143 @@
         <div class="updated">Atualizado em 19/08/2026</div>
     </div>
 
+    <div class="toast" id="toast">Link copiado!</div>
+
     <audio id="bg-music" loop>
         <source src="sua-musica.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        // Matrix
+        // ====================== CURSOR PERSONALIZADO ======================
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        document.querySelectorAll('a, button, h1').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // ====================== MATRIX COM PARTÍCULAS EXTRAS ======================
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        const chars = '0123456789';
+
+        const chars = '0123456789アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンabcdefghijklmnopqrstuvwxyz@#$%&*';
         const fontSize = 16;
-        const columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
+        let columns = Math.floor(canvas.width / fontSize);
+        let drops = Array(columns).fill(1);
 
         function draw() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#ffffff';
             ctx.font = fontSize + 'px monospace';
-            drops.forEach((y, i) => {
+
+            for (let i = 0; i < drops.length; i++) {
                 const text = chars[Math.floor(Math.random() * chars.length)];
-                ctx.fillText(text, i * fontSize, y * fontSize);
-                if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
                 drops[i]++;
-            });
+            }
         }
         setInterval(draw, 33);
 
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            columns = Math.floor(canvas.width / fontSize);
+            drops = Array(columns).fill(1);
         });
 
-        // Horário em tempo real
+        // ====================== HORÁRIO EM TEMPO REAL ======================
         function updateTime() {
             const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('currentTime').textContent = `${hours}:${minutes}`;
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('currentTime').textContent = `${h}:${m}`;
         }
         updateTime();
         setInterval(updateTime, 1000);
 
-        // Contador único por dispositivo
-        const counterKey = 'bruno15987-bruninh-v2';
-        const storageKey = 'bruninh_visited_v2';
+        // ====================== EFEITO DE DIGITAÇÃO ======================
+        const nameEl = document.getElementById('name');
+        const quoteEl = document.getElementById('quote');
+        const fullName = 'Bruninh';
+        const fullQuote = '"A mente que se abre a uma nova ideia jamais voltará ao seu tamanho original."';
+
+        async function typeText(element, text, speed = 70) {
+            element.textContent = '';
+            for (let char of text) {
+                element.textContent += char;
+                await new Promise(r => setTimeout(r, speed));
+            }
+        }
+
+        // Digita o nome e depois a frase
+        (async () => {
+            await typeText(nameEl, fullName, 90);
+            await new Promise(r => setTimeout(r, 400));
+            await typeText(quoteEl, fullQuote, 28);
+        })();
+
+        // ====================== CONTADOR ÚNICO ======================
+        const counterKey = 'bruno15987-bruninh-v3';
+        const storageKey = 'bruninh_visited_v3';
 
         async function updateCounter() {
             const countElement = document.getElementById('count');
             try {
                 if (localStorage.getItem(storageKey)) {
-                    // Já visitou → só busca o valor atual
                     const res = await fetch(`https://countapi.mileshilliard.com/api/v1/get/${counterKey}`);
                     const data = await res.json();
                     countElement.textContent = data.value || '1';
                 } else {
-                    // Primeira visita neste dispositivo → incrementa
                     const res = await fetch(`https://countapi.mileshilliard.com/api/v1/hit/${counterKey}`);
                     const data = await res.json();
                     countElement.textContent = data.value;
                     localStorage.setItem(storageKey, 'true');
                 }
-            } catch (error) {
+            } catch {
                 countElement.textContent = '1';
             }
         }
         updateCounter();
 
-        // Controle de música
+        // ====================== SOM DE CLIQUE ======================
+        function playClick() {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.frequency.value = 800;
+            gain.gain.setValueAtTime(0.08, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.08);
+        }
+
+        document.querySelectorAll('.click-sound').forEach(el => {
+            el.addEventListener('click', playClick);
+        });
+
+        // ====================== MÚSICA ======================
         const music = document.getElementById('bg-music');
         const musicBtn = document.getElementById('musicBtn');
         let isPlaying = false;
 
         musicBtn.addEventListener('click', () => {
+            playClick();
             if (isPlaying) {
                 music.pause();
                 musicBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
@@ -352,6 +497,35 @@
                 musicBtn.classList.add('playing');
             }
             isPlaying = !isPlaying;
+        });
+
+        // ====================== COPIAR PERFIL ======================
+        const copyBtn = document.getElementById('copyBtn');
+        const toast = document.getElementById('toast');
+
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            });
+        });
+
+        // ====================== EASTER EGG (5 cliques no nome) ======================
+        let clickCount = 0;
+        nameEl.addEventListener('click', () => {
+            clickCount++;
+            playClick();
+
+            if (clickCount === 5) {
+                console.log('%c✨ Você encontrou o easter egg do Bruninh! ✨', 'color: #79C83D; font-size: 16px; font-weight: bold;');
+                alert('Você descobriu o easter egg! 👀\n\nContinue explorando...');
+                clickCount = 0;
+            }
+
+            // Reseta se passar muito tempo
+            setTimeout(() => {
+                if (clickCount > 0 && clickCount < 5) clickCount = 0;
+            }, 3000);
         });
     </script>
 </body>
