@@ -55,6 +55,7 @@
             transition: background-color 0.6s ease;
         }
 
+        /* Cursor */
         .cursor {
             width: 12px;
             height: 12px;
@@ -102,6 +103,7 @@
             opacity: 0.25;
         }
 
+        /* Card */
         .card {
             position: relative;
             z-index: 2;
@@ -152,6 +154,7 @@
             box-shadow: 0 18px 50px rgba(0, 0, 0, 0.95);
         }
 
+        /* Avatar */
         .avatar-wrapper {
             position: relative;
             width: 84px;
@@ -195,6 +198,7 @@
             border-color: #eee;
         }
 
+        /* Nome */
         h1 {
             font-size: 1.35rem;
             margin-bottom: 4px;
@@ -284,6 +288,7 @@
             transform: translateY(-3px) scale(1.08);
         }
 
+        /* Tooltip */
         .social-icons a::after {
             content: attr(data-tooltip);
             position: absolute;
@@ -322,7 +327,7 @@
             transition: color 0.6s ease;
         }
 
-        /* Controles de música + volume (corrigido para celular) */
+        /* Controles */
         .music-controls {
             position: absolute;
             top: 12px;
@@ -364,8 +369,8 @@
             height: 4px;
             cursor: pointer;
         }
-        .volume-slider.show {
-            width: 70px;
+        .music-controls:hover .volume-slider {
+            width: 60px;
             opacity: 1;
         }
 
@@ -390,9 +395,6 @@
 
         <div class="music-controls">
             <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.05" value="0.6">
-            <button class="music-btn" id="volumeBtn" title="Volume">
-                <i class="fa-solid fa-volume-high"></i>
-            </button>
             <button class="music-btn" id="musicBtn" title="Música">
                 <i class="fa-solid fa-play"></i>
             </button>
@@ -517,7 +519,7 @@
         updateGreetingAndTime();
         setInterval(updateGreetingAndTime, 1000);
 
-        // Efeito de digitação
+        // ====================== EFEITO DE DIGITAÇÃO ======================
         const nameEl = document.getElementById('name');
         const quoteEl = document.getElementById('quote');
 
@@ -529,6 +531,7 @@
             }
         }
 
+        // Digita o nome e depois a frase
         (async () => {
             await typeText(nameEl, 'Bruninh', 100);
             await new Promise(r => setTimeout(r, 400));
@@ -572,43 +575,17 @@
         }
         document.querySelectorAll('.click-sound').forEach(el => el.addEventListener('click', playClick));
 
-        // ====================== MÚSICA + VOLUME (funciona no celular) ======================
+        // Música + Volume
         const music = document.getElementById('bg-music');
         const musicBtn = document.getElementById('musicBtn');
-        const volumeBtn = document.getElementById('volumeBtn');
         const volumeSlider = document.getElementById('volumeSlider');
         let isPlaying = false;
 
         music.volume = volumeSlider.value;
-
-        // Mostra/esconde o slider ao clicar no botão de volume
-        volumeBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            playClick();
-            volumeSlider.classList.toggle('show');
-        });
-
-        // Fecha o slider se clicar fora
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.music-controls')) {
-                volumeSlider.classList.remove('show');
-            }
-        });
-
-        // Controla o volume e muda o ícone
         volumeSlider.addEventListener('input', () => {
             music.volume = volumeSlider.value;
-
-            if (volumeSlider.value == 0) {
-                volumeBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
-            } else if (volumeSlider.value < 0.4) {
-                volumeBtn.innerHTML = '<i class="fa-solid fa-volume-low"></i>';
-            } else {
-                volumeBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
-            }
         });
 
-        // Play / Pause
         musicBtn.addEventListener('click', () => {
             playClick();
             if (isPlaying) {
@@ -623,7 +600,7 @@
             isPlaying = !isPlaying;
         });
 
-        // Tema
+        // ====================== TEMA COM TRANSIÇÃO SUAVE ======================
         const themeBtn = document.getElementById('themeBtn');
         themeBtn.addEventListener('click', () => {
             playClick();
