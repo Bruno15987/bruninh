@@ -38,7 +38,6 @@
             👁️ Visualizações: <span id="count">...</span>
         </div>
     </div>
-
     <script>
         // Efeito Matrix
         const canvas = document.getElementById('matrix');
@@ -60,8 +59,8 @@
         }
         setInterval(draw, 33);
 
-        // Contador Funcional (CountAPI)
-        fetch('https://api.countapi.xyz/hit/bruno15987-github/bruninh-portfolio')
+        // Contador de visualizações (API substituta do CountAPI)
+        fetch('https://countapi.mileshilliard.com/api/v1/hit/bruno15987-bruninh-portfolio')
             .then(response => response.json())
             .then(data => {
                 document.getElementById('count').textContent = data.value;
