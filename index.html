@@ -8,25 +8,54 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #000000;
+            --card-bg: rgba(0, 0, 0, 0.72);
+            --text: #ffffff;
+            --text-secondary: #bbbbbb;
+            --border: rgba(255, 255, 255, 0.12);
+            --accent: #79C83D;
+            --muted: #777777;
+            --updated: #555555;
+            --icon-bg: rgba(255, 255, 255, 0.08);
+            --icon-hover: rgba(255, 255, 255, 0.18);
+            --tooltip-bg: rgba(20, 20, 20, 0.95);
+        }
+
+        body.light {
+            --bg: #f0f0f0;
+            --card-bg: rgba(255, 255, 255, 0.78);
+            --text: #111111;
+            --text-secondary: #555555;
+            --border: rgba(0, 0, 0, 0.12);
+            --accent: #4a9c2d;
+            --muted: #666666;
+            --updated: #888888;
+            --icon-bg: rgba(0, 0, 0, 0.06);
+            --icon-hover: rgba(0, 0, 0, 0.12);
+            --tooltip-bg: rgba(40, 40, 40, 0.95);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', 'Segoe UI', sans-serif;
-            cursor: none; /* esconde o cursor padrão */
+            cursor: none;
         }
 
         body {
-            background-color: #000;
+            background-color: var(--bg);
             overflow: hidden;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
+            transition: background-color 0.6s ease;
         }
 
-        /* Cursor personalizado */
+        /* Cursor */
         .cursor {
             width: 12px;
             height: 12px;
@@ -41,20 +70,23 @@
             transition: width 0.15s, height 0.15s, background 0.15s;
             mix-blend-mode: difference;
         }
-
         .cursor.hover {
             width: 28px;
             height: 28px;
-            background: rgba(121, 200, 61, 0.4);
+            background: rgba(121, 200, 61, 0.45);
         }
 
         body::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.7) 100%);
+            background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.65) 100%);
             pointer-events: none;
             z-index: 1;
+            transition: opacity 0.6s ease;
+        }
+        body.light::after {
+            opacity: 0.3;
         }
 
         canvas {
@@ -64,13 +96,19 @@
             width: 100%;
             height: 100%;
             z-index: 0;
+            transition: opacity 0.6s ease;
+        }
+        body.light #matrix,
+        body.light #stars {
+            opacity: 0.25;
         }
 
+        /* Card */
         .card {
             position: relative;
             z-index: 2;
-            background: rgba(0, 0, 0, 0.72);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: var(--card-bg);
+            border: 1px solid var(--border);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
             padding: 28px 22px 22px;
@@ -79,12 +117,26 @@
             width: 90%;
             max-width: 340px;
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.85);
-            color: #fff;
-            transition: transform 0.35s ease, box-shadow 0.35s ease;
+            color: var(--text);
+            transition: 
+                transform 0.35s ease, 
+                box-shadow 0.35s ease, 
+                background 0.6s ease, 
+                border-color 0.6s ease,
+                color 0.6s ease;
             opacity: 0;
-            transform: translateY(20px);
-            animation: fadeIn 0.8s ease forwards 0.2s;
+            transform: translateY(30px) scale(0.92);
+            filter: blur(8px);
+            animation: cardEntrance 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.15s;
             overflow: hidden;
+        }
+
+        @keyframes cardEntrance {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
         }
 
         .card::before {
@@ -102,13 +154,7 @@
             box-shadow: 0 18px 50px rgba(0, 0, 0, 0.95);
         }
 
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
+        /* Avatar */
         .avatar-wrapper {
             position: relative;
             width: 84px;
@@ -116,10 +162,7 @@
             margin: 0 auto 16px auto;
             transition: transform 0.3s ease;
         }
-
-        .avatar-wrapper:hover {
-            transform: scale(1.07);
-        }
+        .avatar-wrapper:hover { transform: scale(1.07); }
 
         .avatar {
             width: 100%;
@@ -128,13 +171,11 @@
             overflow: hidden;
             border: 2px solid rgba(255, 255, 255, 0.18);
             box-shadow: 0 0 0 3px rgba(121, 200, 61, 0.15);
-            transition: box-shadow 0.3s ease;
+            transition: box-shadow 0.3s ease, border-color 0.6s ease;
         }
-
         .avatar-wrapper:hover .avatar {
             box-shadow: 0 0 0 5px rgba(121, 200, 61, 0.35);
         }
-
         .avatar img {
             width: 100%;
             height: 100%;
@@ -151,173 +192,213 @@
             border-radius: 50%;
             border: 2.5px solid #111;
             box-shadow: 0 0 8px rgba(121, 200, 61, 0.6);
+            transition: border-color 0.6s ease;
+        }
+        body.light .status {
+            border-color: #eee;
         }
 
+        /* Nome */
         h1 {
             font-size: 1.35rem;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             font-weight: 600;
             letter-spacing: -0.3px;
             min-height: 1.4em;
             cursor: pointer;
+            position: relative;
+            display: inline-block;
+            transition: color 0.6s ease;
+        }
+
+        h1:hover {
+            animation: glitch 0.35s linear;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); text-shadow: none; }
+            20% { transform: translate(-2px, 1px); text-shadow: 2px 0 #ff0040, -2px 0 #00ffff; }
+            40% { transform: translate(2px, -1px); text-shadow: -2px 0 #ff0040, 2px 0 #00ffff; }
+            60% { transform: translate(-1px, 2px); text-shadow: 1px 0 #ff0040, -1px 0 #00ffff; }
+            80% { transform: translate(1px, -2px); text-shadow: -1px 0 #ff0040, 1px 0 #00ffff; }
+            100% { transform: translate(0); text-shadow: none; }
+        }
+
+        .greeting {
+            font-size: 0.78rem;
+            color: var(--accent);
+            margin-bottom: 6px;
+            font-weight: 500;
+            transition: color 0.6s ease;
         }
 
         .time {
             font-size: 0.75rem;
-            color: #888;
+            color: var(--muted);
             margin-bottom: 12px;
+            transition: color 0.6s ease;
         }
 
         p.quote {
             font-size: 0.8rem;
-            color: #bbb;
+            color: var(--text-secondary);
             font-style: italic;
             margin-bottom: 16px;
             line-height: 1.45;
             min-height: 2.8em;
+            transition: color 0.6s ease;
         }
 
         .badge {
             display: inline-block;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid var(--border);
             padding: 5px 14px;
             border-radius: 20px;
             font-size: 0.75rem;
-            margin-bottom: 18px;
-            color: #ccc;
+            margin-bottom: 20px;
+            color: var(--text-secondary);
             background: rgba(255, 255, 255, 0.05);
+            transition: all 0.6s ease;
         }
 
         .social-icons {
             display: flex;
             justify-content: center;
             gap: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
 
         .social-icons a {
-            color: #fff;
+            color: var(--text);
             text-decoration: none;
-            background: rgba(255, 255, 255, 0.08);
+            background: var(--icon-bg);
             width: 38px;
             height: 38px;
             display: flex;
             justify-content: center;
             align-items: center;
             border-radius: 50%;
-            transition: all 0.25s ease;
+            transition: all 0.25s ease, background 0.6s ease, color 0.6s ease;
             font-size: 1rem;
+            position: relative;
         }
 
         .social-icons a:hover {
-            background: rgba(255, 255, 255, 0.18);
+            background: var(--icon-hover);
             transform: translateY(-3px) scale(1.08);
         }
 
-        .actions {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 14px;
-        }
-
-        .copy-btn {
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            color: #aaa;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.72rem;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .copy-btn:hover {
-            background: rgba(255, 255, 255, 0.14);
+        /* Tooltip */
+        .social-icons a::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: -28px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.8);
+            background: var(--tooltip-bg);
             color: #fff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.68rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s ease;
+        }
+        .social-icons a:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
         }
 
         .views {
             font-size: 0.75rem;
-            color: #777;
+            color: var(--muted);
             margin-bottom: 6px;
+            transition: color 0.6s ease;
         }
-
         #count {
-            color: #79C83D;
+            color: var(--accent);
             font-weight: 600;
+            transition: color 0.6s ease;
         }
-
         .updated {
             font-size: 0.68rem;
-            color: #555;
+            color: var(--updated);
+            transition: color 0.6s ease;
         }
 
-        .music-btn {
+        /* Controles */
+        .music-controls {
             position: absolute;
-            top: 14px;
-            right: 14px;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            z-index: 5;
+        }
+
+        .music-btn, .theme-btn {
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            color: #ccc;
+            background: var(--icon-bg);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.25s ease;
-            z-index: 5;
+            transition: all 0.25s ease, background 0.6s ease, color 0.6s ease, border-color 0.6s ease;
             font-size: 0.85rem;
         }
-
-        .music-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
-            color: #fff;
+        .music-btn:hover, .theme-btn:hover {
+            background: var(--icon-hover);
+            color: var(--text);
         }
-
         .music-btn.playing {
-            color: #79C83D;
+            color: var(--accent);
             border-color: rgba(121, 200, 61, 0.3);
         }
 
-        /* Toast de cópia */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: rgba(20, 20, 20, 0.9);
-            color: #79C83D;
-            padding: 10px 18px;
-            border-radius: 30px;
-            font-size: 0.8rem;
+        .volume-slider {
+            width: 0;
             opacity: 0;
             transition: all 0.3s ease;
-            z-index: 100;
-            pointer-events: none;
-            border: 1px solid rgba(121, 200, 61, 0.3);
+            accent-color: var(--accent);
+            height: 4px;
+            cursor: pointer;
+        }
+        .music-controls:hover .volume-slider {
+            width: 60px;
+            opacity: 1;
         }
 
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
+        .theme-btn {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 5;
+            font-size: 0.8rem;
         }
     </style>
 </head>
 <body>
     <div class="cursor" id="cursor"></div>
-
     <canvas id="matrix"></canvas>
+    <canvas id="stars"></canvas>
 
     <div class="card">
-        <button class="music-btn" id="musicBtn" title="Música">
-            <i class="fa-solid fa-play"></i>
+        <button class="theme-btn" id="themeBtn" title="Alternar tema">
+            <i class="fa-solid fa-moon"></i>
         </button>
+
+        <div class="music-controls">
+            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.05" value="0.6">
+            <button class="music-btn" id="musicBtn" title="Música">
+                <i class="fa-solid fa-play"></i>
+            </button>
+        </div>
 
         <div class="avatar-wrapper">
             <div class="avatar">
@@ -326,22 +407,23 @@
             <div class="status"></div>
         </div>
 
-        <h1 id="name">Bruninh</h1>
+        <div class="greeting" id="greeting">Bom dia</div>
+        <h1 id="name"></h1>
         <div class="time" id="currentTime">--:--</div>
 
         <p class="quote" id="quote"></p>
         <div class="badge">💻 Programador</div>
 
         <div class="social-icons">
-            <a href="https://github.com/Bruno15987" target="_blank" class="click-sound"><i class="fa-brands fa-github"></i></a>
-            <a href="https://youtube.com/@bit_systems_x" target="_blank" class="click-sound"><i class="fa-brands fa-youtube"></i></a>
-            <a href="https://instagram.com/bruninh.s_" target="_blank" class="click-sound"><i class="fa-brands fa-instagram"></i></a>
-        </div>
-
-        <div class="actions">
-            <button class="copy-btn click-sound" id="copyBtn">
-                <i class="fa-regular fa-copy"></i> Copiar perfil
-            </button>
+            <a href="https://github.com/Bruno15987" target="_blank" class="click-sound" data-tooltip="GitHub">
+                <i class="fa-brands fa-github"></i>
+            </a>
+            <a href="https://youtube.com/@bit_systems_x" target="_blank" class="click-sound" data-tooltip="YouTube">
+                <i class="fa-brands fa-youtube"></i>
+            </a>
+            <a href="https://instagram.com/bruninh.s_" target="_blank" class="click-sound" data-tooltip="Instagram">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
         </div>
 
         <div class="views">
@@ -350,140 +432,159 @@
         <div class="updated">Atualizado em 19/08/2026</div>
     </div>
 
-    <div class="toast" id="toast">Link copiado!</div>
-
     <audio id="bg-music" loop>
         <source src="sua-musica.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        // ====================== CURSOR PERSONALIZADO ======================
+        // Cursor
         const cursor = document.getElementById('cursor');
-        document.addEventListener('mousemove', (e) => {
+        document.addEventListener('mousemove', e => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
-
-        document.querySelectorAll('a, button, h1').forEach(el => {
+        document.querySelectorAll('a, button, h1, input').forEach(el => {
             el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
             el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
         });
 
-        // ====================== MATRIX COM PARTÍCULAS EXTRAS ======================
+        // Matrix + Estrelas
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        const starsCanvas = document.getElementById('stars');
+        const starsCtx = starsCanvas.getContext('2d');
+
+        function resize() {
+            canvas.width = starsCanvas.width = window.innerWidth;
+            canvas.height = starsCanvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
 
         const chars = '0123456789アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンabcdefghijklmnopqrstuvwxyz@#$%&*';
         const fontSize = 16;
         let columns = Math.floor(canvas.width / fontSize);
         let drops = Array(columns).fill(1);
 
-        function draw() {
+        const stars = Array.from({ length: 80 }, () => ({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            size: Math.random() * 1.5 + 0.5,
+            opacity: Math.random(),
+            speed: Math.random() * 0.02 + 0.005
+        }));
+
+        function drawMatrix() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#ffffff';
             ctx.font = fontSize + 'px monospace';
-
             for (let i = 0; i < drops.length; i++) {
                 const text = chars[Math.floor(Math.random() * chars.length)];
                 ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
             }
         }
-        setInterval(draw, 33);
 
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            columns = Math.floor(canvas.width / fontSize);
-            drops = Array(columns).fill(1);
-        });
-
-        // ====================== HORÁRIO EM TEMPO REAL ======================
-        function updateTime() {
-            const now = new Date();
-            const h = String(now.getHours()).padStart(2, '0');
-            const m = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('currentTime').textContent = `${h}:${m}`;
+        function drawStars() {
+            starsCtx.clearRect(0, 0, starsCanvas.width, starsCanvas.height);
+            stars.forEach(star => {
+                star.opacity += star.speed;
+                if (star.opacity > 1 || star.opacity < 0) star.speed *= -1;
+                starsCtx.beginPath();
+                starsCtx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                starsCtx.fillStyle = `rgba(255, 255, 255, ${Math.abs(star.opacity)})`;
+                starsCtx.fill();
+            });
         }
-        updateTime();
-        setInterval(updateTime, 1000);
+
+        setInterval(() => {
+            drawMatrix();
+            drawStars();
+        }, 33);
+
+        // Saudação + Horário
+        function updateGreetingAndTime() {
+            const now = new Date();
+            const hour = now.getHours();
+            let greeting = 'Boa noite';
+            if (hour >= 5 && hour < 12) greeting = 'Bom dia';
+            else if (hour >= 12 && hour < 18) greeting = 'Boa tarde';
+
+            document.getElementById('greeting').textContent = greeting;
+            document.getElementById('currentTime').textContent =
+                `${String(hour).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        }
+        updateGreetingAndTime();
+        setInterval(updateGreetingAndTime, 1000);
 
         // ====================== EFEITO DE DIGITAÇÃO ======================
         const nameEl = document.getElementById('name');
         const quoteEl = document.getElementById('quote');
-        const fullName = 'Bruninh';
-        const fullQuote = '"A mente que se abre a uma nova ideia jamais voltará ao seu tamanho original."';
 
-        async function typeText(element, text, speed = 70) {
+        async function typeText(element, text, speed = 80) {
             element.textContent = '';
-            for (let char of text) {
-                element.textContent += char;
-                await new Promise(r => setTimeout(r, speed));
+            for (let i = 0; i < text.length; i++) {
+                element.textContent += text[i];
+                await new Promise(resolve => setTimeout(resolve, speed));
             }
         }
 
         // Digita o nome e depois a frase
         (async () => {
-            await typeText(nameEl, fullName, 90);
+            await typeText(nameEl, 'Bruninh', 100);
             await new Promise(r => setTimeout(r, 400));
-            await typeText(quoteEl, fullQuote, 28);
+            await typeText(quoteEl, '"A mente que se abre a uma nova ideia jamais voltará ao seu tamanho original."', 30);
         })();
 
-        // ====================== CONTADOR ÚNICO ======================
+        // Contador único
         const counterKey = 'bruno15987-bruninh-v3';
         const storageKey = 'bruninh_visited_v3';
-
         async function updateCounter() {
-            const countElement = document.getElementById('count');
+            const el = document.getElementById('count');
             try {
                 if (localStorage.getItem(storageKey)) {
                     const res = await fetch(`https://countapi.mileshilliard.com/api/v1/get/${counterKey}`);
                     const data = await res.json();
-                    countElement.textContent = data.value || '1';
+                    el.textContent = data.value || '1';
                 } else {
                     const res = await fetch(`https://countapi.mileshilliard.com/api/v1/hit/${counterKey}`);
                     const data = await res.json();
-                    countElement.textContent = data.value;
+                    el.textContent = data.value;
                     localStorage.setItem(storageKey, 'true');
                 }
             } catch {
-                countElement.textContent = '1';
+                el.textContent = '1';
             }
         }
         updateCounter();
 
-        // ====================== SOM DE CLIQUE ======================
+        // Som de clique
         function playClick() {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
-
             osc.connect(gain);
             gain.connect(ctx.destination);
-
             osc.frequency.value = 800;
-            gain.gain.setValueAtTime(0.08, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
-
-            osc.start(ctx.currentTime);
-            osc.stop(ctx.currentTime + 0.08);
+            gain.gain.setValueAtTime(0.07, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.07);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.07);
         }
+        document.querySelectorAll('.click-sound').forEach(el => el.addEventListener('click', playClick));
 
-        document.querySelectorAll('.click-sound').forEach(el => {
-            el.addEventListener('click', playClick);
-        });
-
-        // ====================== MÚSICA ======================
+        // Música + Volume
         const music = document.getElementById('bg-music');
         const musicBtn = document.getElementById('musicBtn');
+        const volumeSlider = document.getElementById('volumeSlider');
         let isPlaying = false;
+
+        music.volume = volumeSlider.value;
+        volumeSlider.addEventListener('input', () => {
+            music.volume = volumeSlider.value;
+        });
 
         musicBtn.addEventListener('click', () => {
             playClick();
@@ -499,33 +600,28 @@
             isPlaying = !isPlaying;
         });
 
-        // ====================== COPIAR PERFIL ======================
-        const copyBtn = document.getElementById('copyBtn');
-        const toast = document.getElementById('toast');
-
-        copyBtn.addEventListener('click', () => {
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 2000);
-            });
+        // ====================== TEMA COM TRANSIÇÃO SUAVE ======================
+        const themeBtn = document.getElementById('themeBtn');
+        themeBtn.addEventListener('click', () => {
+            playClick();
+            document.body.classList.toggle('light');
+            const isLight = document.body.classList.contains('light');
+            themeBtn.innerHTML = isLight
+                ? '<i class="fa-solid fa-sun"></i>'
+                : '<i class="fa-solid fa-moon"></i>';
         });
 
-        // ====================== EASTER EGG (5 cliques no nome) ======================
+        // Easter egg
         let clickCount = 0;
         nameEl.addEventListener('click', () => {
             clickCount++;
             playClick();
-
             if (clickCount === 5) {
                 console.log('%c✨ Você encontrou o easter egg do Bruninh! ✨', 'color: #79C83D; font-size: 16px; font-weight: bold;');
                 alert('Você descobriu o easter egg! 👀\n\nContinue explorando...');
                 clickCount = 0;
             }
-
-            // Reseta se passar muito tempo
-            setTimeout(() => {
-                if (clickCount > 0 && clickCount < 5) clickCount = 0;
-            }, 3000);
+            setTimeout(() => { if (clickCount > 0 && clickCount < 5) clickCount = 0; }, 3000);
         });
     </script>
 </body>
