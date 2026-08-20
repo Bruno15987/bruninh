@@ -372,7 +372,6 @@ Algumas ideias para futuras versões:
 * [ ] Sistema de links externos
 * [ ] Melhorias de acessibilidade
 * [ ] Otimização de performance
-* [ ] PWA / instalação como aplicativo
 
 ---
 
