@@ -1,394 +1,132 @@
 # 🌐 Bruninh Profile
 
-Uma página de perfil pessoal moderna no estilo **Link in Bio**, desenvolvida com **HTML, CSS e JavaScript puro**, combinando estética cyberpunk, efeitos animados e diversas interações.
+Uma página de perfil moderna (Link in Bio) com visual cyberpunk, efeito Matrix, música, contador de visualizações e várias interações.
+
+---
+
+## ✨ Demonstração
 
 🔗 **[Ver página ao vivo](https://bruno15987.github.io/bruninh/)**
 
 ---
 
-## ✨ Sobre o projeto
-
-O **Bruninh Profile** é uma página de perfil responsiva criada para reunir informações pessoais e redes sociais em uma única interface.
-
-O projeto utiliza animações, efeitos visuais, música de fundo, contador de visualizações e suporte a tema claro/escuro para criar uma experiência mais dinâmica e personalizada.
-
----
-
 ## 🚀 Funcionalidades
 
-* 🟢 Status online no perfil
-* 🟩 Efeito **Matrix** animado no fundo
-* ⭐ Fundo com estrelas animadas
-* 🪟 Card com efeito **Glassmorphism**
-* 🌫️ Textura de grain no card
-* ✨ Animação de entrada do perfil
-* ⌨️ Efeito de digitação no nome e na frase
-* 👋 Saudação automática:
-
-  * Bom dia
-  * Boa tarde
-  * Boa noite
-* 🕐 Relógio em tempo real
-* 👁️ Contador de visualizações
-* 💾 Controle de visualização por dispositivo usando `localStorage`
-* 🎵 Música de fundo
-* 🔊 Controle de volume com slider
-* 📱 Controle de volume compatível com dispositivos móveis
-* 🌙 Tema escuro
-* ☀️ Tema claro
-* 🖱️ Cursor personalizado
-* 🖱️ Efeitos ao passar o mouse
-* 💬 Tooltips nas redes sociais
-* 👾 Efeito glitch no nome
-* 🔊 Sons de interação
-* 🥚 Easter egg secreto
-* 📱 Layout responsivo
+- Efeito Matrix + estrelas no fundo
+- Card com glassmorphism e grain
+- Foto de perfil com status online
+- Efeito de digitação no nome e na frase
+- Saudação automática (Bom dia / Boa tarde / Boa noite)
+- Horário em tempo real
+- Contador de visualizações **único por dispositivo**
+- Música de fundo com controle de volume (funciona no celular)
+- Tema claro / escuro
+- Cursor personalizado
+- Tooltip nos ícones sociais
+- Glitch no nome ao passar o mouse
+- Easter egg secreto
+- Totalmente responsivo
 
 ---
 
-## 🛠️ Tecnologias utilizadas
+## 📁 Como usar este projeto
 
-* **HTML5**
-* **CSS3**
-* **JavaScript**
-* **Canvas API**
-* **Font Awesome**
-* **Google Fonts**
-* **CountAPI**
-* **GitHub Pages**
+### 1. Faça um Fork ou baixe o código
 
-O projeto não utiliza frameworks ou bibliotecas JavaScript para sua lógica principal.
+Clique em **Fork** neste repositório  
+**ou** baixe o ZIP e extraia na sua pasta.
 
----
+### 2. Personalize as informações
 
-## 📂 Estrutura do projeto
+Abra o arquivo `index.html` e altere:
 
-```text
-📦 bruninh
-┣ 📜 index.html
-┣ 🖼️ favicon.jpeg
-┣ 🎵 sua-musica.mp3
-┗ 📜 README.md
-```
+| O que mudar               | Onde encontrar                          |
+|---------------------------|-----------------------------------------|
+| Seu nome                  | No JavaScript (efeito de digitação)     |
+| Sua foto                  | `src="favicon.jpeg"`                    |
+| Sua frase                 | No efeito de digitação (JavaScript)     |
+| Links das redes sociais   | Dentro de `.social-icons`               |
+| Nome do arquivo da música | `src="sua-musica.mp3"`                  |
 
-### Arquivos
+### 3. Coloque sua música
 
-| Arquivo          | Função                                    |
-| ---------------- | ----------------------------------------- |
-| `index.html`     | Estrutura, estilos e JavaScript da página |
-| `favicon.jpeg`   | Foto de perfil                            |
-| `sua-musica.mp3` | Música de fundo                           |
-| `README.md`      | Documentação do projeto                   |
+Coloque o arquivo da música na mesma pasta do `index.html`  
+e renomeie para `sua-musica.mp3`  
+(ou altere o nome no código).
 
----
+### 4. Coloque sua foto
 
-## 🎨 Personalização
+Substitua o arquivo `favicon.jpeg` pela sua foto de perfil  
+(recomendado: formato quadrado).
 
-### 👤 Foto de perfil
+### 5. Publique no GitHub Pages
 
-Substitua:
+1. Crie um repositório no GitHub
+2. Envie os arquivos
+3. Vá em **Settings → Pages**
+4. Em **Source** escolha a branch `main`
+5. Clique em **Save**
 
-```text
-favicon.jpeg
-```
-
-pela sua própria imagem.
-
-O código atualmente utiliza:
-
-```html
-<img src="favicon.jpeg" alt="Foto de perfil">
-```
+Pronto! Sua página estará no ar.
 
 ---
 
-### ✏️ Nome e frase
-
-O nome e a frase são definidos no JavaScript através do efeito de digitação:
-
-```javascript
-await typeText(nameEl, 'Bruninh', 100);
-```
-
-e:
-
-```javascript
-await typeText(quoteEl, 'Sua frase aqui', 30);
-```
-
-Altere esses valores para personalizar o perfil.
-
----
-
-### 🔗 Redes sociais
-
-Os links das redes sociais ficam dentro de:
-
-```html
-<div class="social-icons">
-```
-
-Atualmente o projeto possui links para:
-
-* GitHub
-* YouTube
-* Instagram
-
-Basta substituir as URLs pelos seus próprios perfis.
-
----
-
-### 🎵 Música
-
-A música é carregada através de:
-
-```html
-<audio id="bg-music" loop>
-    <source src="sua-musica.mp3" type="audio/mpeg">
-</audio>
-```
-
-Coloque seu arquivo `.mp3` na mesma pasta do `index.html`.
-
-Depois, altere `sua-musica.mp3` caso utilize outro nome.
-
----
-
-## 👁️ Contador de visualizações
-
-O projeto possui um contador de visualizações utilizando a **CountAPI**.
-
-O sistema utiliza duas chaves:
-
-```javascript
-const counterKey = 'bruno15987-bruninh-v3';
-const storageKey = 'bruninh_visited_v3';
-```
-
-O `localStorage` é utilizado para evitar que o mesmo dispositivo incremente o contador novamente.
-
-Se o visitante já tiver sido registrado, o código apenas consulta o valor atual. Caso contrário, registra uma nova visualização.
-
-### 🔑 Alterando a chave
-
-Para utilizar o contador em outro projeto, altere:
-
-```javascript
-const counterKey = 'seu-projeto-v1';
-const storageKey = 'seu_projeto_visited_v1';
-```
-
-É recomendável utilizar nomes exclusivos para evitar compartilhar o mesmo contador com outro projeto.
-
----
-
-## 🌙 Tema claro e escuro
-
-A página possui dois temas:
-
-* 🌑 Escuro
-* ☀️ Claro
-
-O botão de tema alterna a classe:
-
-```javascript
-document.body.classList.toggle('light');
-```
-
-As cores são controladas principalmente através das variáveis CSS dentro de `:root`.
-
-Exemplo:
-
-```css
-:root {
-    --bg: #000000;
-    --text: #ffffff;
-    --accent: #79C83D;
-}
-```
-
-Para personalizar as cores, altere essas variáveis.
-
----
-
-## 🟩 Efeito Matrix
-
-O fundo utiliza a **Canvas API** para criar uma animação inspirada no efeito Matrix.
-
-Os caracteres utilizados incluem:
-
-* Números
-* Letras
-* Katakana
-* Símbolos
-
-O efeito é renderizado continuamente através de JavaScript.
-
----
-
-## 🎵 Sistema de música
-
-A página possui controles independentes para:
-
-* ▶️ Reproduzir
-* ⏸️ Pausar
-* 🔊 Aumentar/diminuir volume
-* 🔇 Silenciar
-
-O volume é controlado através de:
-
-```javascript
-music.volume = volumeSlider.value;
-```
-
-O ícone também muda automaticamente de acordo com o nível de volume.
-
-> ⚠️ Alguns navegadores podem bloquear a reprodução automática de áudio. Por isso, a música é iniciada através da interação do usuário.
-
----
-
-## 🥚 Easter Egg
-
-Existe um pequeno segredo escondido na página.
-
-Para descobrir:
-
-**Clique 5 vezes no nome "Bruninh".**
-
-O projeto exibirá uma mensagem indicando que o Easter Egg foi encontrado.
-
----
-
-## 📱 Responsividade
-
-A interface foi desenvolvida para funcionar em diferentes tamanhos de tela, incluindo:
-
-* 💻 Computadores
-* 📱 Celulares
-* 📲 Tablets
-
-O controle de volume também foi desenvolvido pensando em dispositivos móveis.
-
----
-
-## 🚀 Como executar localmente
-
-Clone o repositório:
-
-```bash
-git clone https://github.com/Bruno15987/bruninh.git
-```
-
-Entre na pasta:
-
-```bash
-cd bruninh
-```
-
-Depois, abra:
-
-```text
-index.html
-```
-
-em seu navegador.
-
-Não é necessário instalar Node.js, Python ou qualquer dependência para executar a página básica.
-
----
-
-## 🌐 Publicando no GitHub Pages
-
-1. Crie um repositório no GitHub.
-2. Envie os arquivos do projeto.
-3. Abra **Settings**.
-4. Acesse **Pages**.
-5. Em **Source**, selecione a branch `main`.
-6. Salve as configurações.
-7. Aguarde o GitHub Pages publicar o projeto.
-
-Depois disso, sua página poderá ser acessada através do endereço:
-
-```text
-https://SEU-USUARIO.github.io/SEU-REPOSITORIO/
-```
-
----
-
-## 🧰 Git
-
-### Primeiro envio
-
-```bash
+## 🛠️ Comandos Git (primeira vez)
 git init
 git add .
 git commit -m "Primeira versão do meu perfil"
 git branch -M main
 git remote add origin https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git
 git push -u origin main
-```
-
-### Atualizando o projeto
-
-Depois de realizar alterações:
-
-```bash
-git add .
-git commit -m "Atualiza perfil"
-git push
-```
-
-Se o repositório remoto tiver alterações que ainda não estão no computador:
-
-```bash
-git pull --rebase origin main
-git push
-```
+text> Substitua `SEU-USUARIO` e `SEU-REPOSITORIO` pelos seus dados reais.
 
 ---
 
-## 📸 Preview
+## 🎨 Como personalizar mais
 
-Você pode adicionar uma imagem ou GIF do projeto aqui:
+### Mudar a chave do contador
 
-```markdown
-![Bruninh Profile](preview.png)
-```
+Procure por estas linhas no JavaScript:
+const counterKey = 'bruno15987-bruninh-v3';
+const storageKey = 'bruninh_visited_v3';
+textTroque por um nome único (ex: `seu-nome-perfil-v1`).
 
-Basta colocar `preview.png` na raiz do projeto.
+### Mudar as cores
+
+As cores principais estão no início do CSS (`:root`).
+
+### Remover alguma função
+
+Basta apagar a parte correspondente no HTML ou JavaScript.
 
 ---
 
-## 🔮 Possíveis melhorias futuras
+## 📌 Estrutura de arquivos
+📦 seu-repositorio
+┣ 📜 index.html
+┣ 📜 favicon.jpeg      ← sua foto
+┣ 📜 sua-musica.mp3    ← sua música
+┗ 📜 README.md
+text---
 
-Algumas ideias para futuras versões:
+## 💡 Dicas
 
-* [ ] Persistência do tema escolhido
-* [ ] Mais redes sociais
-* [ ] Animações adicionais
-* [ ] Página de projetos
-* [ ] Links personalizados
-* [ ] Estatísticas do GitHub
-* [ ] Sistema de links externos
-* [ ] Melhorias de acessibilidade
-* [ ] Otimização de performance
+- Use uma música leve (mp3) para não deixar a página pesada
+- Teste no celular também
+- O contador só aumenta 1 vez por dispositivo (graças ao localStorage)
+- O volume funciona tanto no computador quanto no celular
+
+---
+
+## 🧠 Créditos
+
+Feito com ❤️ por **Bruninh**
+
+Inspirado em páginas de Link in Bio modernas com visual cyberpunk.
 
 ---
 
 ## 📄 Licença
 
-Este projeto está disponível para **uso pessoal e educacional**.
-
-Você pode modificar e adaptar o código para seus próprios projetos.
-
----
-
-## ❤️ Créditos
-
-Desenvolvido por **Bruninh**.
-
-Projeto criado com **HTML, CSS e JavaScript**, inspirado no conceito de páginas **Link in Bio** com estética cyberpunk.
-
----
-
-⭐ Se você gostou do projeto, considere deixar uma estrela no repositório!
+Este projeto é livre para uso pessoal e educacional.  
+Pode modificar e usar como quiser.
