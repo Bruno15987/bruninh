@@ -25,7 +25,6 @@
             position: relative;
         }
 
-        /* Vignette suave */
         body::after {
             content: '';
             position: absolute;
@@ -51,7 +50,7 @@
             border: 1px solid rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
-            padding: 28px 22px;
+            padding: 28px 22px 22px;
             border-radius: 18px;
             text-align: center;
             width: 90%;
@@ -65,7 +64,6 @@
             overflow: hidden;
         }
 
-        /* Grain sutil */
         .card::before {
             content: '';
             position: absolute;
@@ -93,6 +91,11 @@
             width: 84px;
             height: 84px;
             margin: 0 auto 16px auto;
+            transition: transform 0.3s ease;
+        }
+
+        .avatar-wrapper:hover {
+            transform: scale(1.05);
         }
 
         .avatar {
@@ -102,6 +105,11 @@
             overflow: hidden;
             border: 2px solid rgba(255, 255, 255, 0.18);
             box-shadow: 0 0 0 3px rgba(121, 200, 61, 0.15);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .avatar-wrapper:hover .avatar {
+            box-shadow: 0 0 0 4px rgba(121, 200, 61, 0.3);
         }
 
         .avatar img {
@@ -110,7 +118,6 @@
             object-fit: cover;
         }
 
-        /* Status online */
         .status {
             position: absolute;
             bottom: 4px;
@@ -125,9 +132,15 @@
 
         h1 {
             font-size: 1.35rem;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             font-weight: 600;
             letter-spacing: -0.3px;
+        }
+
+        .time {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 12px;
         }
 
         p.quote {
@@ -178,6 +191,7 @@
         .views {
             font-size: 0.75rem;
             color: #777;
+            margin-bottom: 8px;
         }
 
         #count {
@@ -185,7 +199,11 @@
             font-weight: 600;
         }
 
-        /* Botão de música */
+        .updated {
+            font-size: 0.68rem;
+            color: #555;
+        }
+
         .music-btn {
             position: absolute;
             top: 14px;
@@ -232,6 +250,8 @@
         </div>
 
         <h1>Bruninh</h1>
+        <div class="time" id="currentTime">--:--</div>
+
         <p class="quote">"A mente que se abre a uma nova ideia jamais voltará ao seu tamanho original."</p>
         <div class="badge">💻 Programador</div>
 
@@ -244,9 +264,9 @@
         <div class="views">
             👁️ Visualizações: <span id="count">...</span>
         </div>
+        <div class="updated">Atualizado em 19/08/2026</div>
     </div>
 
-    <!-- Música -->
     <audio id="bg-music" loop>
         <source src="sua-musica.mp3" type="audio/mpeg">
     </audio>
@@ -281,15 +301,40 @@
             canvas.height = window.innerHeight;
         });
 
-        // Contador (chave nova = começa do zero)
-        fetch('https://countapi.mileshilliard.com/api/v1/hit/bruno15987-bruninh-v2')
-            .then(r => r.json())
-            .then(data => {
-                document.getElementById('count').textContent = data.value;
-            })
-            .catch(() => {
-                document.getElementById('count').textContent = '1';
-            });
+        // Horário em tempo real
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('currentTime').textContent = `${hours}:${minutes}`;
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // Contador único por dispositivo
+        const counterKey = 'bruno15987-bruninh-v2';
+        const storageKey = 'bruninh_visited_v2';
+
+        async function updateCounter() {
+            const countElement = document.getElementById('count');
+            try {
+                if (localStorage.getItem(storageKey)) {
+                    // Já visitou → só busca o valor atual
+                    const res = await fetch(`https://countapi.mileshilliard.com/api/v1/get/${counterKey}`);
+                    const data = await res.json();
+                    countElement.textContent = data.value || '1';
+                } else {
+                    // Primeira visita neste dispositivo → incrementa
+                    const res = await fetch(`https://countapi.mileshilliard.com/api/v1/hit/${counterKey}`);
+                    const data = await res.json();
+                    countElement.textContent = data.value;
+                    localStorage.setItem(storageKey, 'true');
+                }
+            } catch (error) {
+                countElement.textContent = '1';
+            }
+        }
+        updateCounter();
 
         // Controle de música
         const music = document.getElementById('bg-music');
