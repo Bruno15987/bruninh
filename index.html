@@ -6,57 +6,267 @@
     <title>Perfil | Bruninh</title>
     <link rel="icon" type="image/png" href="favicon.jpeg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #000; overflow: hidden; height: 100vh; display: flex; justify-content: center; align-items: center; }
-        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-        .card { position: relative; z-index: 2; background: rgba(0, 0, 0, 0.75); border: 1px solid rgba(255, 255, 255, 0.12); backdrop-filter: blur(12px); padding: 25px 20px; border-radius: 16px; text-align: center; width: 90%; max-width: 340px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9); color: #fff; }
-        .avatar { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 15px auto; overflow: hidden; border: 2px solid rgba(255, 255, 255, 0.2); }
-        .avatar img { width: 100%; height: 100%; object-fit: cover; }
-        h1 { font-size: 1.3rem; margin-bottom: 10px; font-weight: 600; }
-        p.quote { font-size: 0.8rem; color: #ccc; font-style: italic; margin-bottom: 15px; }
-        .badge { display: inline-block; border: 1px solid rgba(255, 255, 255, 0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; margin-bottom: 20px; color: #ddd; background: rgba(255, 255, 255, 0.05); }
-        .social-icons { display: flex; justify-content: center; gap: 12px; margin-bottom: 20px; }
-        .social-icons a { color: #fff; text-decoration: none; background: rgba(255, 255, 255, 0.1); width: 36px; height: 36px; display: flex; justify-content: center; align-items: center; border-radius: 50%; transition: 0.3s; }
-        .views { font-size: 0.75rem; color: #888; }
-        #count { color: #79C83D; font-weight: bold; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Vignette suave */
+        body::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.7) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .card {
+            position: relative;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 28px 22px;
+            border-radius: 18px;
+            text-align: center;
+            width: 90%;
+            max-width: 340px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.85);
+            color: #fff;
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s ease forwards 0.2s;
+            overflow: hidden;
+        }
+
+        /* Grain sutil */
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            border-radius: 18px;
+            z-index: 1;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.95);
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 84px;
+            height: 84px;
+            margin: 0 auto 16px auto;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 0 0 3px rgba(121, 200, 61, 0.15);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Status online */
+        .status {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            width: 14px;
+            height: 14px;
+            background: #79C83D;
+            border-radius: 50%;
+            border: 2.5px solid #111;
+            box-shadow: 0 0 8px rgba(121, 200, 61, 0.6);
+        }
+
+        h1 {
+            font-size: 1.35rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        p.quote {
+            font-size: 0.8rem;
+            color: #bbb;
+            font-style: italic;
+            margin-bottom: 16px;
+            line-height: 1.45;
+        }
+
+        .badge {
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-bottom: 20px;
+            color: #ccc;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .social-icons a {
+            color: #fff;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.08);
+            width: 38px;
+            height: 38px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            transition: all 0.25s ease;
+            font-size: 1rem;
+        }
+
+        .social-icons a:hover {
+            background: rgba(255, 255, 255, 0.18);
+            transform: translateY(-3px) scale(1.08);
+        }
+
+        .views {
+            font-size: 0.75rem;
+            color: #777;
+        }
+
+        #count {
+            color: #79C83D;
+            font-weight: 600;
+        }
+
+        /* Botão de música */
+        .music-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            z-index: 5;
+            font-size: 0.85rem;
+        }
+
+        .music-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+
+        .music-btn.playing {
+            color: #79C83D;
+            border-color: rgba(121, 200, 61, 0.3);
+        }
     </style>
 </head>
 <body>
     <canvas id="matrix"></canvas>
+
     <div class="card">
-        <div class="avatar"><img src="favicon.jpeg" alt="Foto"></div>
+        <button class="music-btn" id="musicBtn" title="Música">
+            <i class="fa-solid fa-play"></i>
+        </button>
+
+        <div class="avatar-wrapper">
+            <div class="avatar">
+                <img src="favicon.jpeg" alt="Foto">
+            </div>
+            <div class="status"></div>
+        </div>
+
         <h1>Bruninh</h1>
         <p class="quote">"A mente que se abre a uma nova ideia jamais voltará ao seu tamanho original."</p>
         <div class="badge">💻 Programador</div>
+
         <div class="social-icons">
             <a href="https://github.com/Bruno15987" target="_blank"><i class="fa-brands fa-github"></i></a>
             <a href="https://youtube.com/@bit_systems_x" target="_blank"><i class="fa-brands fa-youtube"></i></a>
             <a href="https://instagram.com/bruninh.s_" target="_blank"><i class="fa-brands fa-instagram"></i></a>
         </div>
+
         <div class="views">
             👁️ Visualizações: <span id="count">...</span>
         </div>
     </div>
 
-    <!-- Áudio oculto rodando automaticamente em loop -->
-    <!-- Substitua "sua-musica.mp3" pelo arquivo de áudio na mesma pasta -->
-    <audio id="bg-music" autoplay loop>
+    <!-- Música -->
+    <audio id="bg-music" loop>
         <source src="sua-musica.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        // Efeito Matrix
+        // Matrix
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
         const chars = '0123456789';
         const fontSize = 16;
         const columns = canvas.width / fontSize;
         const drops = Array(Math.floor(columns)).fill(1);
+
         function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#ffffff'; ctx.font = fontSize + 'px monospace';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = fontSize + 'px monospace';
             drops.forEach((y, i) => {
                 const text = chars[Math.floor(Math.random() * chars.length)];
                 ctx.fillText(text, i * fontSize, y * fontSize);
@@ -66,15 +276,38 @@
         }
         setInterval(draw, 33);
 
-        // Contador de visualizações
-        fetch('https://countapi.mileshilliard.com/api/v1/hit/bruno15987-bruninh-portfolio')
-            .then(response => response.json())
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Contador (chave nova = começa do zero)
+        fetch('https://countapi.mileshilliard.com/api/v1/hit/bruno15987-bruninh-v2')
+            .then(r => r.json())
             .then(data => {
                 document.getElementById('count').textContent = data.value;
             })
-            .catch(error => {
+            .catch(() => {
                 document.getElementById('count').textContent = '1';
             });
+
+        // Controle de música
+        const music = document.getElementById('bg-music');
+        const musicBtn = document.getElementById('musicBtn');
+        let isPlaying = false;
+
+        musicBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                music.pause();
+                musicBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+                musicBtn.classList.remove('playing');
+            } else {
+                music.play().catch(() => {});
+                musicBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                musicBtn.classList.add('playing');
+            }
+            isPlaying = !isPlaying;
+        });
     </script>
 </body>
 </html>
