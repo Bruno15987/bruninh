@@ -6,7 +6,7 @@ Uma página de perfil moderna (Link in Bio) com visual cyberpunk, efeito Matrix,
 
 ## ✨ Demonstração
 
-🔗 **[Ver página ao vivo](https://bruno15987.github.io/SEU-REPOSITORIO/)**
+🔗 **[Ver página ao vivo](https://bruno15987.github.io/bruninh/)**
 
 ---
 
